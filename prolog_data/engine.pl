@@ -19,10 +19,15 @@ subclases_de(X,L):-findall(C1,subc(C1,X),L).
 superclases_de(X,L):-findall(C1,subc(X,C1),S),de_reversa(S,L).
 
 %Para consultar qu� objetos tienen UNA propiedad determinada
-tiene_propiedad(P,Objs):-frame(X,_,propiedades(L),descripcion(_)),member(P,L),subclases_de(X,S),select(X,Objs,S),!.
+tiene_propiedad_sub(P,Objs):-frame(X,_,propiedades(L),descripcion(_)),member(P,L),subclases_de(X,S),select(X,Objs,S),!.
 
 %Obtiene todas las propiedades de todos los objetos
 todas_propiedades(L):-findall(P,frame(_,_,propiedades(P),descripcion(_)),NL), flatten(NL,L).
+
+% Para consultar todos los frames que tienen una propiedad en común
+frames_con_propiedad(P, Frames):- findall(F, tiene_propiedad(P, F), Frames).
+% Un frame tiene una propiedad si la propiedad está en la lista de propiedades del frame
+tiene_propiedad(P, F) :- frame(F, _, propiedades(Propiedades), _), member(P, Propiedades).
 
 %Obtiene la descripcion de un clase
 obtiene_descripcion(C,D):-frame(C,_,_,descripcion(D)).

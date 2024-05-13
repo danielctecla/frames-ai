@@ -20,6 +20,7 @@ class window(QtWidgets.QMainWindow):
         self.loadProperties()
         self.ui.class_listWidget.itemClicked.connect(self.on_item_clicked_Class)
         self.ui.properties_search.itemClicked.connect(self.on_item_clicked_Property)
+        self.on_item_clicked_Class("machine_learning")        
 
     def getData(self):
         classes = list(prolog.query("clases(L)"))
@@ -34,11 +35,15 @@ class window(QtWidgets.QMainWindow):
         self.ui.class_listWidget.setCurrentRow(0)
     
     def loadProperties(self):
+        self.property_names = list(set(self.property_names))
         self.ui.properties_search.addItems(self.property_names)
-        self.ui.properties_search.setCurrentRow(0)
     
     def on_item_clicked_Class(self, item):
-        class_name = item.text()
+        if not isinstance(item, str):
+            class_name = item.text()
+        else: 
+            class_name = item
+        
         self.setProperties(class_name)
         self.setClassDescription(class_name)
         self.setImage(class_name)

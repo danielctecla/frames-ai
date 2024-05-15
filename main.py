@@ -88,6 +88,7 @@ def app():
     sys.exit(app.exec())
 
 
+
 prolog = Prolog()
 prolog.consult("prolog_data/knowledge.pl")
 prolog.consult("prolog_data/engine.pl")

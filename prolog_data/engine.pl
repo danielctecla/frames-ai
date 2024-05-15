@@ -6,7 +6,11 @@ subclase(X):-frame(X,subclase_de(_),_,_).
 
 %Para consultar propiedades use: propiedadesc(luciernaga, L).
 propiedadesc(top,[]):-!.
-propiedadesc(X,Z):-frame(X,subclase_de(Y),propiedades(P),descripcion(_)),propiedadesc(Y,P1), concatenar(P1,P,W),de_reversa(W,Z).
+propiedadesc(X,Z):-
+	frame(X,subclase_de(Y),propiedades(P),descripcion(_)),
+	propiedadesc(Y,P1), 
+	concatenar(P1,P,W),
+	de_reversa(W,Z).
 
 
 %Para consultar todas las clases representadas en los frames
@@ -18,11 +22,23 @@ subclases_de(X,L):-findall(C1,subc(C1,X),L).
 %Para consultar todas las superclases de una clase
 superclases_de(X,L):-findall(C1,subc(X,C1),S),de_reversa(S,L).
 
-%Para consultar qu� objetos tienen UNA propiedad determinada
+%Para consultar que objetos tienen UNA propiedad determinada
 tiene_propiedad_sub(P,Objs):-frame(X,_,propiedades(L),descripcion(_)),member(P,L),subclases_de(X,S),select(X,Objs,S),!.
 
 %Obtiene todas las propiedades de todos los objetos
-todas_propiedades(L):-findall(P,frame(_,_,propiedades(P),descripcion(_)),NL), flatten(NL,L).
+todas_propiedades(L):-
+	findall(P,frame(_,_,propiedades(P),descripcion(_)),NL), 
+	flatten(NL,FlatList),
+	eliminar_duplicados(FlatList, L).
+
+
+% Predicado auxiliar para eliminar duplicados de una lista
+eliminar_duplicados([], []).
+eliminar_duplicados([H|T], R) :-
+    member(H, T), !,
+    eliminar_duplicados(T, R).
+eliminar_duplicados([H|T], [H|R]) :-
+    eliminar_duplicados(T, R).	
 
 % Para consultar todos los frames que tienen una propiedad en común
 frames_con_propiedad(P, Frames):- findall(F, tiene_propiedad(P, F), Frames).
